@@ -43,40 +43,6 @@ kein Internet mehr. Der einfachste Weg:
 
 ### Weg 1 — GitHub Pages (kostenlos, dauerhaft)
 
-1. Auf [github.com](https://github.com) ein neues, **öffentliches** Repository
-   anlegen, z. B. `italienisch`.
-2. Den gesamten Inhalt dieses Ordners hochladen
-   (`index.html`, `sw.js`, `manifest.webmanifest`, `icons/`, `src/`).
-3. Im Repository: **Settings → Pages → Source: `main` / `root` → Save**.
-4. Nach ein bis zwei Minuten steht dort die Adresse, etwa
-   `https://deinname.github.io/italienisch/`.
-5. Diese Adresse **auf dem iPhone in Safari** öffnen.
-6. Teilen-Symbol (das Quadrat mit dem Pfeil) → **Zum Home-Bildschirm**.
-
-Fertig. Das Symbol liegt jetzt neben den anderen Apps, startet im Vollbild und
-läuft ab sofort ohne Internet — auch im Flugzeug oder im Ausland ohne Roaming.
-
-### Weg 2 — Netlify Drop (schnellster Weg, ohne Konto)
-
-1. [app.netlify.com/drop](https://app.netlify.com/drop) öffnen.
-2. Diesen Ordner ins Browserfenster ziehen.
-3. Die entstandene `https://…netlify.app`-Adresse aufs iPhone schicken und dort
-   wie oben zum Home-Bildschirm hinzufügen.
-
-### Weg 3 — nur zum Ausprobieren am PC
-
-```bash
-node tools/serve.mjs
-```
-
-Dann `http://localhost:8080` im Browser öffnen. Der Server zeigt beim Start auch
-die WLAN-Adresse an, über die sich die App vom iPhone aus öffnen lässt. Achtung:
-Über eine WLAN-Adresse (`http://192.168.…`) läuft die App zwar, aber **ohne
-Offline-Speicher** — dafür verlangt das iPhone `https`. Zum täglichen Lernen
-also Weg 1 oder 2 nehmen.
-
----
-
 ## Tägliche Erinnerung
 
 Web-Apps dürfen auf dem iPhone keine eigenen Wecker stellen. Deshalb gibt es
