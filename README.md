@@ -43,6 +43,87 @@ kein Internet mehr. Der einfachste Weg:
 
 ### Weg 1 — GitHub Pages (kostenlos, dauerhaft)
 
+1. Auf [github.com](https://github.com) ein neues, **öffentliches** Repository
+   anlegen, z. B. `italienisch`.
+2. Den gesamten Inhalt dieses Ordners hochladen — **einschließlich der Ordner
+   `src/` und `icons/` mit allen Unterordnern.**
+3. Im Repository: **Settings → Pages → Source: `main` / `root` → Save**.
+4. Nach ein bis zwei Minuten steht dort die Adresse, etwa
+   `https://deinname.github.io/italienisch/`.
+5. Diese Adresse **auf dem iPhone in Safari** öffnen.
+6. Teilen-Symbol (das Quadrat mit dem Pfeil) → **Zum Home-Bildschirm**.
+
+#### Wenn stattdessen ein Fehlerbildschirm kommt
+
+Der Bildschirm nennt die Ursache und listet jede fehlende Datei einzeln auf.
+Die drei häufigen Fälle:
+
+**„Es fehlen Dateien"** — beim Hochladen sind Ordner verloren gegangen. Das
+passiert, wenn man im Browser die Dateien einzeln auswählt statt die Ordner zu
+ziehen: GitHub legt dann nur die losen Dateien an, `src/` und `icons/` fehlen.
+Im Repository muss es genau so aussehen:
+
+```
+index.html
+sw.js
+manifest.webmanifest
+.nojekyll
+icons/      icon-180.png · icon-192.png · icon-512.png · icon-maskable-512.png
+src/css/    app.css
+src/js/     app.js · ui.js · store.js · srs.js · speech.js · content.js ·
+            curriculum.js · lesson.js · runner.js · views.js
+src/data/   vocab-a1.js · vocab-a1b.js · vocab-a2.js · vocab-b1.js ·
+            vocab-extra.js · grammar.js · dialogues.js
+```
+
+Am zuverlässigsten geht es über *Add file → Upload files* und dann den **Ordner
+`src` als Ganzes** ins Fenster ziehen (danach `icons` genauso). Wer Git
+installiert hat, ist mit drei Zeilen schneller:
+
+```bash
+git init && git add -A && git commit -m "Italienisch-App"
+git remote add origin https://github.com/DEINNAME/italienisch.git
+git push -u origin main
+```
+
+**„Dateien nicht gefunden"** — unter der geöffneten Adresse liegt gar nichts.
+Entweder läuft die Veröffentlichung noch (nach dem ersten Push dauert es ein bis
+zwei Minuten, unter *Actions* sieht man den Fortschritt), oder die Adresse zeigt
+auf den falschen Ordner. Liegen die Dateien im Repository in einem Unterordner
+`italienisch/`, lautet die Adresse `https://deinname.github.io/repo/italienisch/`
+— mit Schrägstrich am Ende.
+
+**„Start nicht möglich"** trotz vollständiger Dateien — dann steht die
+tatsächliche Fehlermeldung im grauen Kasten darunter. Schick sie mir, dann
+schaue ich nach.
+
+Die Datei `.nojekyll` gehört mit ins Repository. Ohne sie schickt GitHub Pages
+die Dateien durch seinen Blog-Generator, was hier nur Ärger macht.
+
+Fertig. Das Symbol liegt jetzt neben den anderen Apps, startet im Vollbild und
+läuft ab sofort ohne Internet — auch im Flugzeug oder im Ausland ohne Roaming.
+
+### Weg 2 — Netlify Drop (schnellster Weg, ohne Konto)
+
+1. [app.netlify.com/drop](https://app.netlify.com/drop) öffnen.
+2. Diesen Ordner ins Browserfenster ziehen.
+3. Die entstandene `https://…netlify.app`-Adresse aufs iPhone schicken und dort
+   wie oben zum Home-Bildschirm hinzufügen.
+
+### Weg 3 — nur zum Ausprobieren am PC
+
+```bash
+node tools/serve.mjs
+```
+
+Dann `http://localhost:8080` im Browser öffnen. Der Server zeigt beim Start auch
+die WLAN-Adresse an, über die sich die App vom iPhone aus öffnen lässt. Achtung:
+Über eine WLAN-Adresse (`http://192.168.…`) läuft die App zwar, aber **ohne
+Offline-Speicher** — dafür verlangt das iPhone `https`. Zum täglichen Lernen
+also Weg 1 oder 2 nehmen.
+
+---
+
 ## Tägliche Erinnerung
 
 Web-Apps dürfen auf dem iPhone keine eigenen Wecker stellen. Deshalb gibt es

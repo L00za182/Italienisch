@@ -61,27 +61,110 @@
   <script type="module" src="src/js/app.js"></script>
 
   <script>
-    /* Wenn die App nicht startet, soll wenigstens der Grund sichtbar sein –
-       sonst steht man vor einer weißen Seite. */
+    /* Wenn die App nicht startet, soll der Bildschirm den echten Grund nennen –
+       nicht bloß eine Vermutung. Dafür werden im Fehlerfall die wichtigsten
+       Dateien einzeln nachgeladen und ihr Status angezeigt. */
     (function () {
       var shown = false;
-      function fail(msg) {
-        if (shown) return;
+      var esc = function (s) {
+        return String(s === undefined || s === null ? '' : s)
+          .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      };
+
+      // Diese Dateien braucht die App zwingend.
+      var PROBE = [
+        'src/js/app.js',
+        'src/js/views.js',
+        'src/data/vocab-a1.js',
+        'src/css/app.css',
+        'manifest.webmanifest'
+      ];
+
+      function show(title, advice, detail) {
         var boot = document.querySelector('#app .boot');
-        if (!boot) return;              // App läuft bereits – nichts tun
-        shown = true;
+        if (!boot) return;
         boot.innerHTML =
           '<div class="flag"></div>' +
-          '<h1>Start nicht möglich</h1>' +
-          '<p>Die App muss über einen Webserver geöffnet werden,<br>' +
-          'nicht per Doppelklick auf die Datei.</p>' +
-          '<code>' + String(msg).replace(/[<&]/g, '') + '</code>';
+          '<h1>' + esc(title) + '</h1>' +
+          '<p>' + advice + '</p>' +
+          (detail ? '<code>' + detail + '</code>' : '');
       }
+
+      function diagnose(msg) {
+        var base = location.href.replace(/[?#].*$/, '').replace(/[^/]*$/, '');
+
+        // Fall 1: per Doppelklick geöffnet – dann greift keine Modul-Ladung.
+        if (location.protocol === 'file:') {
+          show('Start nicht möglich',
+            'Die Datei wurde direkt vom Datenträger geöffnet. Browser verbieten in ' +
+            'diesem Fall das Laden der App-Module.<br><br>' +
+            'Lade die App über eine Web-Adresse (GitHub&nbsp;Pages) oder starte lokal ' +
+            '<b>node tools/serve.mjs</b>.',
+            esc(msg));
+          return;
+        }
+
+        // Fall 2: über das Netz geladen – nachsehen, was tatsächlich fehlt.
+        var lines = [];
+        var missing = [];
+        var done = 0;
+
+        PROBE.forEach(function (rel) {
+          var url = base + rel;
+          fetch(url, { cache: 'no-store' })
+            .then(function (res) {
+              var type = res.headers.get('content-type') || '?';
+              lines.push((res.ok ? 'OK  ' : res.status + ' ') + rel +
+                         (res.ok ? '  [' + type.split(';')[0] + ']' : ''));
+              if (!res.ok) missing.push(rel);
+            })
+            .catch(function (e) {
+              lines.push('--- ' + rel + '  (' + (e && e.message || 'nicht erreichbar') + ')');
+              missing.push(rel);
+            })
+            .then(function () {
+              if (++done < PROBE.length) return;
+              lines.sort();
+              var detail = esc('Adresse: ' + base + '\n\n' + lines.join('\n') + '\n\nMeldung: ' + msg);
+
+              if (missing.length === PROBE.length) {
+                show('Dateien nicht gefunden',
+                  'Unter dieser Adresse liegt keine der App-Dateien. Wahrscheinlich ' +
+                  'zeigt die Adresse auf den falschen Ordner, oder die Veröffentlichung ' +
+                  'läuft noch.', detail);
+              } else if (missing.length) {
+                show('Es fehlen Dateien',
+                  'Beim Hochladen sind Ordner verloren gegangen. Im Repository müssen ' +
+                  '<b>index.html</b>, <b>sw.js</b>, <b>manifest.webmanifest</b> sowie die ' +
+                  'kompletten Ordner <b>src/</b> und <b>icons/</b> liegen — mit allen ' +
+                  'Unterordnern.<br><br>Fehlt: <b>' + esc(missing.join(', ')) + '</b>', detail);
+              } else {
+                show('Start nicht möglich',
+                  'Alle Dateien sind da, aber die App bricht beim Start ab. ' +
+                  'Die Meldung unten sagt, woran es liegt.', detail);
+              }
+            });
+        });
+      }
+
+      function fail(msg) {
+        if (shown) return;
+        if (!document.querySelector('#app .boot')) return;   // App läuft bereits
+        shown = true;
+        show('Einen Moment…', 'Die Ursache wird gerade ermittelt.', '');
+        diagnose(msg);
+      }
+
       window.addEventListener('error', function (e) {
-        if (e.target && e.target.tagName === 'SCRIPT') fail('Modul konnte nicht geladen werden.');
-        else if (e.message) fail(e.message);
+        if (e.target && e.target.tagName === 'SCRIPT') {
+          fail('Modul ' + (e.target.getAttribute('src') || '?') + ' konnte nicht geladen werden.');
+        } else if (e.message) {
+          fail(e.message);
+        }
       }, true);
-      window.addEventListener('unhandledrejection', function (e) { fail(e.reason && e.reason.message || e.reason); });
+      window.addEventListener('unhandledrejection', function (e) {
+        fail((e.reason && e.reason.message) || e.reason);
+      });
       setTimeout(function () { fail('Zeitüberschreitung beim Laden.'); }, 8000);
     })();
   </script>

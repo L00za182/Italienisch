@@ -9,7 +9,7 @@
  * bereits installierte Geräte die alte Fassung.
  */
 
-const VERSION = 'italiano-v1';
+const VERSION = 'italiano-v2';
 
 const FILES = [
   './',
