@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Impara l'italiano</title>
+
+<!-- Vollbild auf dem iPhone, kein Zoom-Springen beim Tippen in Eingabefelder -->
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#FBF7F1">
+<meta name="description" content="Italienisch in 365 Tagen — offline, ohne Konto, mit Bildern und täglicher Wiederholung.">
+
+<!-- Als App auf dem Home-Bildschirm -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Italiano">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="icon" href="icons/icon-192.png" type="image/png">
+<link rel="manifest" href="manifest.webmanifest">
+
+<link rel="stylesheet" href="src/css/app.css">
+
+<style>
+  /* Nur für den Moment vor dem Start – danach ersetzt die App den Inhalt. */
+  .boot {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 14px; min-height: 70dvh; text-align: center; color: #6B6259;
+  }
+  .boot .flag {
+    width: 62px; height: 62px; border-radius: 20px;
+    background: linear-gradient(100deg, #1F7A4C 0 33%, #f4f1ec 33% 66%, #C0392B 66%);
+    box-shadow: 0 8px 24px rgba(36,31,26,.14);
+  }
+  .boot h1 { font-family: ui-serif, Georgia, serif; font-size: 22px; margin: 0; color: #241F1A; }
+  @media (prefers-color-scheme: dark) { .boot h1 { color: #F0EAE1; } }
+  .boot code {
+    display: block; margin-top: 10px; font-size: 13px; text-align: left;
+    white-space: pre-wrap; word-break: break-word; max-width: 34em;
+  }
+</style>
+</head>
+
+<body>
+  <div id="app" class="app">
+    <div class="boot">
+      <div class="flag"></div>
+      <h1>Impara l'italiano</h1>
+      <p>Einen Moment…</p>
+    </div>
+  </div>
+
+  <nav id="tabbar" class="tabbar" aria-label="Hauptnavigation"></nav>
+
+  <noscript>
+    <div class="boot">
+      <h1>JavaScript ist ausgeschaltet</h1>
+      <p>Die App braucht JavaScript. Bitte in den Safari-Einstellungen einschalten.</p>
+    </div>
+  </noscript>
+
+  <script type="module" src="src/js/app.js"></script>
+
+  <script>
+    /* Wenn die App nicht startet, soll wenigstens der Grund sichtbar sein –
+       sonst steht man vor einer weißen Seite. */
+    (function () {
+      var shown = false;
+      function fail(msg) {
+        if (shown) return;
+        var boot = document.querySelector('#app .boot');
+        if (!boot) return;              // App läuft bereits – nichts tun
+        shown = true;
+        boot.innerHTML =
+          '<div class="flag"></div>' +
+          '<h1>Start nicht möglich</h1>' +
+          '<p>Die App muss über einen Webserver geöffnet werden,<br>' +
+          'nicht per Doppelklick auf die Datei.</p>' +
+          '<code>' + String(msg).replace(/[<&]/g, '') + '</code>';
+      }
+      window.addEventListener('error', function (e) {
+        if (e.target && e.target.tagName === 'SCRIPT') fail('Modul konnte nicht geladen werden.');
+        else if (e.message) fail(e.message);
+      }, true);
+      window.addEventListener('unhandledrejection', function (e) { fail(e.reason && e.reason.message || e.reason); });
+      setTimeout(function () { fail('Zeitüberschreitung beim Laden.'); }, 8000);
+    })();
+  </script>
+</body>
+</html>
