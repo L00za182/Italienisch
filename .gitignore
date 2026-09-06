@@ -2,3 +2,8 @@
 .claude/
 .claude-flow/
 dist/
+
+# npm-Arbeitsdateien – die App selbst braucht keine Abhängigkeiten
+node_modules/
+package.json
+package-lock.json
