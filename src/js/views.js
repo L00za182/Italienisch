@@ -2,8 +2,7 @@
  * Die einzelnen Ansichten der App (außer der Lektion, die steckt in runner.js).
  */
 
-import { h,
-null clear, toast, progressBar, strengthBars, levelPill, plural } from './ui.js';
+import { h, clear, toast, progressBar, strengthBars, levelPill, plural } from './ui.js';
 import * as store from './store.js';
 import * as speech from './speech.js';
 import { WORDS, WORD_BY_ID, THEMES, GRAMMAR, DIALOGUES, STATS } from './content.js';
