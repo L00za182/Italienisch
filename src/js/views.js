@@ -32,7 +32,7 @@ export function viewHome(ctx) {
       h('div', { class: 'sub' }, pic(phase.icon), ` Phase ${phase.n} · ${phase.name}`)
     ),
     h('div', { class: 'spacer' }),
-    s.streak > 0 ? h('div', { class: 'streak-chip' }, '🔥', String(s.streak)) : null
+    s.streak > 0 ? h('div', { class: 'streak-chip' }, pic('🔥'), String(s.streak)) : null
   ));
 
   /* Tageskarte */
@@ -55,12 +55,12 @@ export function viewHome(ctx) {
   /* Start-Knopf */
   if (doneToday && s.doneDays.includes(day - 1) && day > 1) {
     root.append(h('div', { class: 'card center' },
-      h('div', { style: 'font-size:40px' }, '✅'),
+      h('div', { style: 'font-size:40px' }, pic('✅')),
       h('h2', { text: 'Heute erledigt!' }),
       h('p', { class: 'muted small', text: `${doneToday.correct} von ${doneToday.total} richtig. Morgen geht es weiter mit Tag ${day}.` }),
       h('div', { class: 'btn-row', style: 'margin-top:14px' },
         h('button', { class: 'btn soft', onclick: () => ctx.startLesson(day) }, '▶︎ Tag ', String(day), ' vorziehen'),
-        h('button', { class: 'btn ghost', onclick: () => ctx.startPractice('due') }, '🎧 Frei üben')
+        h('button', { class: 'btn ghost', onclick: () => ctx.startPractice('due') }, pic('🎧'), ' Frei üben')
       )
     ));
   } else {
@@ -68,9 +68,9 @@ export function viewHome(ctx) {
       '▶︎', doneToday ? 'Weiterlernen' : `Lektion ${day} starten`));
     root.append(h('div', { class: 'btn-row', style: 'margin-top:10px' },
       h('button', { class: 'btn ghost sm', style: 'flex:1', onclick: () => ctx.startPractice('due') },
-        '🔁 Nur wiederholen', due ? ` (${due})` : ''),
+        pic('🔁'), ' Nur wiederholen', due ? ` (${due})` : ''),
       h('button', { class: 'btn ghost sm', style: 'flex:1', onclick: () => ctx.startPractice('trouble') },
-        '🎯 Schwierige Wörter')
+        pic('🎯'), ' Schwierige Wörter')
     ));
   }
 
@@ -273,11 +273,11 @@ export function viewWord(ctx, word) {
     h('div', { class: 'pic' }, pic(word.img)),
     h('div', { class: 'word' }, word.it),
     h('div', { class: 'sub' }, word.de),
-    h('button', { class: 'say', onclick: () => { speech.unlock(); speech.speak(word.it); } }, '🔊 Anhören'),
+    h('button', { class: 'say', onclick: () => { speech.unlock(); speech.speak(word.it); } }, pic('🔊'), ' Anhören'),
     word.exIt ? h('div', { class: 'example' },
       h('div', { class: 'it' }, word.exIt),
       h('div', { class: 'de' }, word.exDe),
-      h('button', { class: 'btn ghost sm', style: 'margin-top:10px', onclick: () => { speech.unlock(); speech.speak(word.exIt); } }, '🔊 Satz anhören')
+      h('button', { class: 'btn ghost sm', style: 'margin-top:10px', onclick: () => { speech.unlock(); speech.speak(word.exIt); } }, pic('🔊'), ' Satz anhören')
     ) : null
   ));
 
@@ -297,7 +297,7 @@ export function viewWord(ctx, word) {
   }
 
   root.append(h('button', { class: 'btn ghost', onclick: () => ctx.openTheme(word.theme) },
-    '📚 Thema „', word.themeName, '“ üben'));
+    pic('📚'), ' Thema „', word.themeName, '“ üben'));
 
   return root;
 }
@@ -381,7 +381,7 @@ export function grammarCard(g, { compact = false } = {}) {
     t.append(h('tbody', {}, g.table.rows.map(r => h('tr', {}, r.map(x => h('td', { html: x }))))));
     box.append(h('div', { class: 'table-wrap' }, t));
   }
-  for (const tip of g.tips || []) box.append(h('div', { class: 'tip', html: '💡 ' + tip }));
+  for (const tip of g.tips || []) box.append(h('div', { class: 'tip' }, pic('💡'), ' ', h('span', { html: tip })));
   return box;
 }
 
@@ -522,7 +522,7 @@ export function viewSettings(ctx) {
     h('div', { class: 'setting', style: 'display:block' },
       h('p', { class: 'small muted', style: 'margin:0 0 10px' },
         'Auf dem iPhone dürfen Web-Apps keine eigenen Wecker stellen. Lade dir deshalb einen Kalendereintrag mit täglichem Alarm herunter – der funktioniert zuverlässig und ohne Internet.'),
-      h('button', { class: 'btn soft', onclick: () => ctx.downloadReminder() }, '📅 Kalender-Erinnerung erstellen')
+      h('button', { class: 'btn soft', onclick: () => ctx.downloadReminder() }, pic('📅'), ' Kalender-Erinnerung erstellen')
     ),
     'Notification' in window ? h('div', { class: 'setting' },
       h('div', { class: 'lab' }, h('b', { text: 'Mitteilungen erlauben' }),

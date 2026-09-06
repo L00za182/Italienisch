@@ -7,3 +7,8 @@ dist/
 node_modules/
 package.json
 package-lock.json
+
+# npm-Arbeitsdateien – die App selbst braucht keine Abhängigkeiten
+node_modules/
+package.json
+package-lock.json

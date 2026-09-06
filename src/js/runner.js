@@ -101,12 +101,12 @@ export function runLesson(ctx, lesson) {
         h('div', { class: 'pic' }, pic(w.img)),
         h('div', { class: 'word' }, w.it),
         h('div', { class: 'sub' }, w.de),
-        h('button', { class: 'say', onclick: () => speech.speak(w.it) }, '🔊 Nochmal hören'),
+        h('button', { class: 'say', onclick: () => speech.speak(w.it) }, pic('🔊'), ' Nochmal hören'),
         (store.settings().showExamples && w.exIt)
           ? h('div', { class: 'example' },
               h('div', { class: 'it' }, w.exIt),
               h('div', { class: 'de' }, w.exDe),
-              h('button', { class: 'btn ghost sm', style: 'margin-top:10px', onclick: () => speech.speak(w.exIt) }, '🔊 Satz'))
+              h('button', { class: 'btn ghost sm', style: 'margin-top:10px', onclick: () => speech.speak(w.exIt) }, pic('🔊'), ' Satz'))
           : null
       ),
       h('div', { class: 'grow' }),
@@ -157,11 +157,11 @@ export function runLesson(ctx, lesson) {
     if (step.image && !step.listen) promptCard.append(h('div', { class: 'pic' }, pic(step.image)));
     if (step.listen) {
       promptCard.append(h('div', { class: 'pic' }, pic('🔊')));
-      promptCard.append(h('button', { class: 'say', onclick: () => speech.speak(step.speak) }, '🔊 Nochmal'));
+      promptCard.append(h('button', { class: 'say', onclick: () => speech.speak(step.speak) }, pic('🔊'), ' Nochmal'));
     } else {
       promptCard.append(h('div', { class: 'word' }, step.prompt));
       if (step.sub) promptCard.append(h('div', { class: 'sub' }, step.sub));
-      if (step.speak) promptCard.append(h('button', { class: 'say', onclick: () => speech.speak(step.speak) }, '🔊'));
+      if (step.speak) promptCard.append(h('button', { class: 'say', onclick: () => speech.speak(step.speak) }, pic('🔊')));
     }
 
     const stage = h('div', { class: 'stage' },
@@ -320,7 +320,7 @@ export function runLesson(ctx, lesson) {
             };
             speech.unlock(); readNext();
           }
-        }, '🔊 Vorlesen')),
+        }, pic('🔊'), ' Vorlesen')),
       h('div', { class: 'grow' }),
       h('button', { class: 'btn', style: 'margin-top:10px', onclick: next }, 'Weiter')
     );
@@ -355,7 +355,7 @@ export function runLesson(ctx, lesson) {
     }
 
     box.append(h('div', { class: 'card center' },
-      h('div', { style: 'font-size:52px' }, pct >= 90 ? '🌟' : pct >= 70 ? '👏' : '💪'),
+      h('div', { style: 'font-size:52px' }, pic(pct >= 90 ? '🌟' : pct >= 70 ? '👏' : '💪')),
       h('h2', { text: lesson.day ? `Tag ${lesson.day} geschafft` : 'Übung beendet', style: 'font-size:23px' }),
       h('p', { class: 'muted small' },
         asked ? `${correct} von ${asked} richtig · ${pct}%` : 'Gut gemacht.'),
@@ -375,7 +375,7 @@ export function runLesson(ctx, lesson) {
         list.append(h('button', { class: 'row', onclick: () => speech.speak(w.it) },
           h('div', { class: 'emoji' }, pic(w.img)),
           h('div', { class: 'body' }, h('b', { text: w.it }), h('span', { text: w.de })),
-          h('div', { class: 'tail' }, '🔊')));
+          h('div', { class: 'tail' }, pic('🔊'))));
       }
       box.append(list);
     }
@@ -387,7 +387,7 @@ export function runLesson(ctx, lesson) {
       box.append(h('button', {
         class: 'btn ghost', style: 'margin-top:10px',
         onclick: () => { finish(); ctx.startPractice('trouble'); }
-      }, '🎯 Schwierige Wörter jetzt üben'));
+      }, pic('🎯'), ' Schwierige Wörter jetzt üben'));
     }
 
     return box;

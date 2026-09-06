@@ -223,7 +223,7 @@ function reminderBanner() {
 
   return h('div', { class: 'card', style: 'background:var(--terra-lt);border-color:var(--terra)' },
     h('div', { style: 'display:flex;gap:12px;align-items:center' },
-      h('div', { style: 'font-size:28px' }, '🔥'),
+      h('div', { style: 'font-size:28px' }, pic('🔥')),
       h('div', { style: 'flex:1' },
         h('b', { text: `${s.streak} Tage Serie — heute noch nicht gelernt` }),
         h('div', { class: 'small muted' }, 'Zehn Minuten reichen, um sie zu halten.'))));
