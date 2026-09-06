@@ -1,0 +1,4 @@
+# Arbeitsdateien lokaler Werkzeuge – gehören nicht zur App
+.claude/
+.claude-flow/
+dist/
