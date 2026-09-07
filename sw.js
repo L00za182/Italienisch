@@ -9,7 +9,7 @@
  * bereits installierte Geräte die alte Fassung.
  */
 
-const VERSION = 'italiano-v4';
+const VERSION = 'italiano-v5';
 
 const FILES = [
   './',

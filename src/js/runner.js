@@ -120,6 +120,9 @@ export function runLesson(ctx, lesson) {
 
     const optsBox = h('div', { class: `options ${step.layout === 'grid' ? 'grid' : ''}` });
     const buttons = [];
+    // Bei der Hörübung steht vor der Antwort nur der Lautsprecher im Feld.
+    // Danach tritt das Bild zum Wort an seine Stelle – siehe `reveal`.
+    const picSlot = h('div', { class: 'pic' });
 
     step.options.forEach(o => {
       const b = h('button', { class: `opt ${o.big ? 'big' : ''}` }, o.big ? pic(o.label) : o.label);
@@ -145,6 +148,7 @@ export function runLesson(ctx, lesson) {
         if (say) speech.speak(say);
 
         const rightLabel = step.options.find(x => x.correct).label;
+        if (step.listen) reveal(rightLabel);
         stage.append(feedback(ok, ok ? null : h('span', {}, 'Richtig ist: ', h('b', {}, rightLabel)), next));
         stage.scrollIntoView({ block: 'end', behavior: 'smooth' });
       });
@@ -153,10 +157,19 @@ export function runLesson(ctx, lesson) {
       optsBox.append(b);
     });
 
+    /** Hörübung beantwortet: Lautsprecher gegen Bild, Wort und Bedeutung tauschen. */
+    function reveal(rightLabel) {
+      if (step.image) { clear(picSlot); picSlot.append(pic(step.image)); }
+      const after = picSlot.nextSibling;
+      promptCard.insertBefore(h('div', { class: 'word' }, rightLabel), after);
+      if (step.sub) promptCard.insertBefore(h('div', { class: 'sub' }, step.sub), after);
+    }
+
     const promptCard = h('div', { class: `prompt-card ${step.listen ? 'listen' : ''}` });
     if (step.image && !step.listen) promptCard.append(h('div', { class: 'pic' }, pic(step.image)));
     if (step.listen) {
-      promptCard.append(h('div', { class: 'pic' }, pic('🔊')));
+      picSlot.append(pic('🔊'));
+      promptCard.append(picSlot);
       promptCard.append(h('button', { class: 'say', onclick: () => speech.speak(step.speak) }, pic('🔊'), ' Nochmal'));
     } else {
       promptCard.append(h('div', { class: 'word' }, step.prompt));

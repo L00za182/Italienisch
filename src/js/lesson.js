@@ -38,20 +38,39 @@ function distractors(word, pool, n = 3, field = 'de') {
 }
 
 /**
- * Emoji-Ablenker: nur Wörter, deren Bild eindeutig ist (`pic`), und jedes
- * Emoji höchstens einmal. Reicht der Vorrat nicht für n Ablenker, gibt es
- * weniger zurück – die Bilderfrage entfällt dann (siehe exPickImage).
+ * Bild-Ablenker: nur Wörter, deren Bild eindeutig ist (`pic`), und jedes
+ * Bild höchstens einmal.
+ *
+ * Gesucht wird in vier Runden, von nah nach fern: gleiches Thema aus dem
+ * bekannten Wortschatz, restlicher bekannter Wortschatz, gleiche Stufe aus
+ * dem ganzen Kurs, ganzer Kurs. Die letzten beiden Runden sind der Grund,
+ * warum es die Bilderfrage auch an Tag 1 gibt – dort umfasst der bekannte
+ * Wortschatz nur zwölf Wörter, von denen kaum drei ein eindeutiges Bild
+ * haben. Als Ablenker taugt jedes Bild, auch das zu einem noch unbekannten
+ * Wort: gefragt ist ja das Bild, nicht dessen Vokabel.
  */
 function imageDistractors(word, pool, n = 3) {
   const seen = new Set([word.img]);
   const out = [];
-  const cand = pool.filter(w => w.pic && w.id !== word.id);
-  for (const w of [...shuffle(cand.filter(x => x.theme === word.theme)), ...shuffle(cand)]) {
-    if (seen.has(w.img)) continue;
-    seen.add(w.img);
-    out.push(w);
-    if (out.length === n) break;
-  }
+
+  const take = list => {
+    for (const w of list) {
+      if (seen.has(w.img)) continue;
+      seen.add(w.img);
+      out.push(w);
+      if (out.length === n) return true;
+    }
+    return false;
+  };
+
+  const known = pool.filter(w => w.pic && w.id !== word.id);
+  if (take(shuffle(known.filter(w => w.theme === word.theme)))) return out;
+  if (take(shuffle(known))) return out;
+
+  const inPool = new Set(pool.map(w => w.id));
+  const rest = WORDS.filter(w => w.pic && w.id !== word.id && !inPool.has(w.id));
+  if (take(shuffle(rest.filter(w => w.level === word.level)))) return out;
+  take(shuffle(rest));
   return out;
 }
 
@@ -99,11 +118,16 @@ function exPickImage(word, pool) {
   };
 }
 
+/**
+ * Hörübung. Vor der Antwort steht nur der Lautsprecher da – ein Bild würde
+ * die Lösung verraten. `image` und `sub` deckt der Ablauf erst auf, wenn
+ * geantwortet ist; so endet auch diese Übung bei einem Bild zum Wort.
+ */
 function exListen(word, pool) {
   const opts = shuffle([word, ...distractors(word, pool, 3, 'it')]);
   return {
     type: 'choice', mode: 'listen', wordId: word.id, listen: true,
-    prompt: '🔊', speak: word.it,
+    prompt: '🔊', speak: word.it, image: word.img, sub: word.de,
     question: 'Was hörst du?',
     options: opts.map(o => ({ label: o.it, correct: o.id === word.id }))
   };
